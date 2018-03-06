@@ -15,15 +15,15 @@ plotly_build(p)
 df_names <- add_rownames(df, "State")
 
 # Remove spaces from columns
-names(df_names)[4] <- "LifeExp"
-names(df_names)[6] <- "HSGrad"
+names(df_names)[5] <- "LifeExp"
+names(df_names)[7] <- "HSGrad"
 
 # Create scatter plot with trace
 p_trace <- plot_ly(df_names, type="scatter", mode="markers",
                    x = ~Population,
                    y = ~Income,
                    text = df_names$State,
-                   color = ~Illiteracy)
+                   color = ~LifeExp)
 
 # Build plot
 plotly_build(p_trace)
