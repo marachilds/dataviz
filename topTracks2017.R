@@ -22,7 +22,7 @@ duration_avg <- duration_asc %>%
 duration_avg$y <- factor(duration_avg$name, levels = unique(duration_avg$name)[order(duration_avg$duration_ms, decreasing = TRUE)])
 
 # Alternatively, set row number to column called number to replace "~y"
-# tracks_asc <- rownames_to_column(tracks_asc, "number")
+# duration_asc <- rownames_to_column(duration_asc, "number")
 
 p1 <- plot_ly(duration_avg, type="bar", 
               orientation="h", 
@@ -30,4 +30,18 @@ p1 <- plot_ly(duration_avg, type="bar",
               y = ~y)
 plotly_build(p1)
 
+# Let's change some colors
+# Add column to handle plotly colors
+duration_avg$color <- "rgba(204,204,204,1)"
+duration_avg[1, "color"] <- "rgba(222,45,38,0.8)"
 
+# Make it into a list
+c <- as.vector(duration_avg$color)
+  
+# Another chart
+p2 <- plot_ly(duration_avg, type="bar", 
+              orientation="h", 
+              x = ~duration_ms, 
+              y = ~y, 
+              marker = (list(color = c)))
+plotly_build(p2)
