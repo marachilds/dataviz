@@ -24,24 +24,44 @@ duration_avg$y <- factor(duration_avg$name, levels = unique(duration_avg$name)[o
 # Alternatively, set row number to column called number to replace "~y"
 # duration_asc <- rownames_to_column(duration_asc, "number")
 
-p1 <- plot_ly(duration_avg, type="bar", 
-              orientation="h", 
-              x = ~duration_ms, 
+p1 <- plot_ly(duration_avg, type="bar",
+              orientation="h",
+              x = ~duration_ms,
               y = ~y)
 plotly_build(p1)
 
 # Let's change some colors
-# Add column to handle plotly colors
+# Add column to handle plotly colors, this might be a yikes
 duration_avg$color <- "rgba(204,204,204,1)"
 duration_avg[1, "color"] <- "rgba(222,45,38,0.8)"
 
 # Make it into a list
 c <- as.vector(duration_avg$color)
   
-# Another chart
-p2 <- plot_ly(duration_avg, type="bar", 
-              orientation="h", 
-              x = ~duration_ms, 
-              y = ~y, 
+# Another chart, this time with the average
+p2 <- plot_ly(duration_avg, type="bar",
+              orientation="h",
+              x = ~duration_ms,
+              y = ~y,
               marker = (list(color = c)))
 plotly_build(p2)
+
+# Let's make a scatter plot
+t <- list(family = "sans-serif",
+          size = 12,
+          color = "black")
+
+p3 <- plot_ly(tracks, type="scatter",
+              mode="markers",
+              x = ~tempo,
+              y = ~danceability,
+              size = ~loudness,
+              color = ~(-acousticness),
+              colors = "BuPu",
+              text = ~paste(name, "<br>", artists)) %>% 
+      layout(title = "Spotify Top Tracks 2017",
+             yaxis = list(zeroline = FALSE),
+             xaxis = list(zeroline = FALSE),
+             font = t)
+plotly_build(p3)
+
