@@ -1,0 +1,16 @@
+---
+author: "Mara Childs"
+content: "Top Tracks 2017 Analysis"
+date: "3/8/2018"
+output:
+  html_document:
+    css: style.css
+---
+
+<!-- Using "include = FALSE" to hide code work -->
+```{r libraries, include = FALSE}
+library(httr)
+library(dplyr)
+library(knitr)
+library(plotly)
+```
