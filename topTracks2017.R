@@ -59,7 +59,7 @@ p3 <- plot_ly(tracks, type="scatter",
               color = ~(-acousticness),
               colors = "BuPu",
               text = ~paste(name, "<br>", artists)) %>% 
-      layout(title = "Spotify Top Tracks 2017",
+      layout(title = "Spotify's Top Tracks 2017",
              yaxis = list(zeroline = FALSE),
              xaxis = list(zeroline = FALSE),
              font = t)
