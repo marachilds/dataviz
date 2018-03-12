@@ -1,7 +1,7 @@
 ---
 author: "Mara Childs"
 content: "Top Tracks 2017 Analysis"
-date: "3/8/2018"
+date: "3/18/2018"
 output:
   html_document:
     css: style.css
@@ -14,3 +14,19 @@ library(dplyr)
 library(knitr)
 library(plotly)
 ```
+
+# Spotify's Top 100 Tracks of 2017
+##### An in-depth look at what we streamed the most
+
+For this project, I'm exploring the data from Spotify's top streamed tracks of 2017. [This Kaggle dataset](https://www.kaggle.com/nadintamer/top-tracks-of-2017/data) includes Spotify's track metadata as well as 13 different track metrics for a total of 16 data points per track: track id, track name, track artist, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration (ms), and time signature. Spotify provides a brief interpretation of these descriptors on its [developer API endpoint reference](https://developer.spotify.com/web-api/get-audio-features/).
+
+```{r data, include = FALSE}
+# Read in Spotify Top Songs 2017 csv
+tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
+```
+
+```{r artists, include = FALSE}
+
+```
+### Artists
+The top 100 tracks may be 100 individual songs, but there were some repeat artists. By artist, 
