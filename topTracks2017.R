@@ -16,7 +16,7 @@ artists <- tracks %>% select(name, artists)
 artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
 
 # Table
-artistCol <- c("Day of the Week","Total Incidents")
+artistCol <- c("Artist Name","Total Tracks")
 
 #DURATION
 # Tracks by ascending duration
