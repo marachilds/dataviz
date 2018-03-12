@@ -1,8 +1,9 @@
 body {
-    font-family: 'Graphik', sans-serif;
+    font-family: 'graphik', sans-serif;
 }
 
 .table {
-    width: 55% !important;
     margin: auto;
+    padding: 25px;
+    width: 55% !important;
 }

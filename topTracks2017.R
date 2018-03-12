@@ -16,6 +16,7 @@ artists <- select(tracks, name, artists)
 
 # Tracks per artist
 artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+totalArtists <- nrow(artistPopularity)
 topArtists <- artistPopularity %>% filter(n > 1)
 
 # Top artists table
@@ -146,24 +147,9 @@ p2 <- plot_ly(durationAvg, type="bar",
               marker = (list(color = c)))
 plotly_build(p2)
 
-# Let's make a scatter plot
-t3 <- list(family = "sans-serif",
-          size = 12,
-          color = "black")
-
-p3 <- plot_ly(tracks, type="scatter",
-              mode="markers",
-              x = ~tempo,
-              y = ~danceability,
-              size = ~loudness,
-              color = ~(-acousticness),
-              colors = "BuPu",
-              text = ~paste(name, "<br>", artists)) %>% 
-      layout(title = "Spotify's Top Tracks 2017",
-             yaxis = list(zeroline = FALSE),
-             xaxis = list(zeroline = FALSE),
-             font = t3)
-plotly_build(p3)
+# CHANGE TIME IN MS TO HUMAN TIME (minutes and seconds)
+trackTime <- tracks %>% select(name, duration_ms) %>% 
+                    mutate(duration = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
 
 # TIME SIGNATURE
 time <- count(tracks, time_signature)
@@ -174,3 +160,35 @@ timePie <- plot_ly(time, labels = ~time_signature, values = ~n, type = 'pie') %>
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 plotly_build(timePie)
+
+# Observing multiple histograms that have values between 0 and 1
+subplot(
+  danceHist, energyHist, valenceHist, acoustHist,
+  nrows = 4, shareX = TRUE
+)
+
+# CROSS EXAMINATION WITH SCATTERPLOT
+# Let's make a scatter plot
+t3 <- list(family = "sans-serif",
+           size = 12,
+           color = "black")
+
+p3 <- plot_ly(tracks, type="scatter",
+              mode="markers",
+              x = ~tempo,
+              y = ~danceability,
+              size = ~loudness,
+              color = ~(-acousticness),
+              colors = "BuPu",
+              text = ~paste(name, "<br>", artists)) %>% 
+  layout(title = "Spotify's Top Tracks 2017",
+         yaxis = list(zeroline = FALSE),
+         xaxis = list(zeroline = FALSE),
+         font = t3)
+plotly_build(p3)
+
+# ED SHEERAN
+ed <- filter(tracks, grepl("Ed Sheeran", artists))
+
+# THE CHAINSMOKERS
+tsc <- filter(tracks, grepl("The Chainsmokers", artists))
