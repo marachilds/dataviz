@@ -62,6 +62,52 @@ modePie <- plot_ly(modeCount, labels = ~mode, values = ~n, type = 'pie') %>%
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 plotly_build(modePie)
 
+# SPEECHINESS
+speech <- select(tracks, name, artists, speechiness)
+
+# Speechiness histogram
+speechHist <- plot_ly(speech, x = ~speechiness) %>% add_histogram(name = "speechiness")
+plotly_build(speechHist)
+
+# ACOUSTICNESS
+acoustic <- select(tracks, name, artists, acousticness)
+
+# Acousticness histogram
+acoustHist <- plot_ly(acoustic, x = ~acousticness) %>% add_histogram(name = "acousticness")
+plotly_build(acoustHist)
+
+# INSTRUMENTALNESS — NEED TO WORK ON THIS
+instrumental <- select(tracks, name, artists, instrumentalness)
+
+# Instrumentalness histogram
+instHist <- plot_ly(instrumental, x = ~instrumentalness) %>% add_histogram(name = "instrumentalness")
+plotly_build(instHist)
+
+# Instrumentalness bar
+instBar <- plot_ly(instrumental, x = ~name, y = ~instrumentalness, type = "bar")
+plotly_build(instBar)
+
+# LIVENESS
+live <- select(tracks, name, artists, liveness)
+
+# Liveness histogram
+liveHist <- plot_ly(live, x = ~liveness) %>% add_histogram(name = "liveness")
+plotly_build(liveHist)
+
+# VALENCE
+valence <- select(tracks, name, artists, valence)
+
+# Liveness histogram
+valenceHist <- plot_ly(valence, x = ~valence) %>% add_histogram(name = "valence")
+plotly_build(valenceHist)
+
+# TEMPO
+tempo <- select(tracks, name, artists, tempo)
+
+# Tempo histogram
+tempoHist <- plot_ly(tempo, x = ~tempo) %>% add_histogram(name = "tempo")
+plotly_build(tempoHist)
+
 #DURATION
 # Tracks by ascending duration
 durationAsc <- arrange(tracks, duration_ms) %>% select(name, duration_ms)
@@ -118,3 +164,13 @@ p3 <- plot_ly(tracks, type="scatter",
              xaxis = list(zeroline = FALSE),
              font = t3)
 plotly_build(p3)
+
+# TIME SIGNATURE
+time <- count(tracks, time_signature)
+
+# Time pie (no pun this time, sorry)
+timePie <- plot_ly(time, labels = ~time_signature, values = ~n, type = 'pie') %>%
+  layout(title = 'Modes of the Top Tracks',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+plotly_build(timePie)
