@@ -26,7 +26,19 @@ tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 ```
 
 ```{r artists, include = FALSE}
+# ARTISTS
+artists <- tracks %>% select(name, artists)
 
+# Tracks per artist
+artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+topArtists <- artistPopularity %>% filter(n > 1)
 ```
+
 ### Artists
-The top 100 tracks may be 100 individual songs, but there were some repeat artists. By artist, 
+The top 100 tracks may be 100 individual songs, but there were `r nrow(topArtists)` artists with more than one track on the list. Topping the list with `r topArtists[1,2]` tracks each were `r topArtists[1,1]` and `r topArtists[2,1]`. 
+
+```{r artist table, echo = FALSE}
+# Top artists table
+artistCol <- c("Artist Name","Number of Tracks")
+kable(topArtists, row.names = NA, col.names = artistCol, caption = "Artists With More Than One Track")
+```

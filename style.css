@@ -1,3 +1,8 @@
 body {
     font-family: 'Graphik', sans-serif;
 }
+
+.table {
+    width: 55% !important;
+    margin: auto;
+}

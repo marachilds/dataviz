@@ -9,14 +9,58 @@ setwd("~/Google Drive/School/GSA 2017-2018/7-Data Visualization/dataviz")
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 
+# Isolating each metric so I can examine each one individually first
+
 # ARTISTS
-artists <- tracks %>% select(name, artists)
+artists <- select(tracks, name, artists)
 
 # Tracks per artist
 artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+topArtists <- artistPopularity %>% filter(n > 1)
 
-# Table
-artistCol <- c("Artist Name","Total Tracks")
+# Top artists table
+artistCol <- c("Artist Name","Number of Tracks")
+kable(topArtists, row.names = NA, col.names = artistCol, caption = "Artists With More Than One Track")
+
+# DANCEABILITY
+dance <- select(tracks, name, artists, danceability)
+
+# Danceability histogram
+danceHist <- plot_ly(dance, x = ~danceability) %>% add_histogram(name = "danceability")
+plotly_build(danceHist)
+
+# ENERGY
+energy <- select(tracks, name, artists, energy)
+
+# Energy histogram
+energyHist <- plot_ly(energy, x = ~energy) %>% add_histogram(name = "energy")
+plotly_build(energyHist)
+
+# KEY
+key <- select(tracks, name, artists, key) 
+keyCount <- key %>% count(key)
+
+# Key bar chart
+keyChart <- plot_ly(keyCount, x = ~key, y = ~n, type = "bar")
+plotly_build(keyChart)
+
+# LOUDNESS
+loud <- select(tracks, name, artists, loudness)
+
+# Loudness histogram
+loudHist <- plot_ly(loud, x = ~loudness) %>% add_histogram(name = "loudness")
+plotly_build(loudHist)
+
+# MODE (1 Major or 0 Minor)
+mode <- select(tracks, name, artists, mode)
+modeCount <- mode %>% count(mode)
+
+# Mode pie chart (One might even say...pie ala mode haha)
+modePie <- plot_ly(modeCount, labels = ~mode, values = ~n, type = 'pie') %>%
+  layout(title = 'Modes of the Top Tracks',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+plotly_build(modePie)
 
 #DURATION
 # Tracks by ascending duration
