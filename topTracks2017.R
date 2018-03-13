@@ -212,16 +212,7 @@ plotly_build(p1)
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
 ed1 <- plot_ly(ed, x = ~name, y = ~danceability, type = "bar")
 plotly_build(ed1)
-edAvgDance <- mean(ed$danceability)
-edAvgEnergy
-edAvgLoud
-edAvgSpeech
-edAvgAcoust
-edAvgInst
-edAvgLive
-edAvgVal
-edAvgTemp
-edAvg
+
 
 # THE CHAINSMOKERS
 tsc <- filter(tracks, grepl("The Chainsmokers", artists))
