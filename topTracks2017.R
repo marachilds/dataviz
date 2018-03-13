@@ -88,6 +88,16 @@ plotly_build(instHist)
 instBar <- plot_ly(instrumental, x = ~name, y = ~instrumentalness, type = "bar")
 plotly_build(instBar)
 
+# Instrumentalness count
+instCount <- instrumental %>% count(instrumentalness)
+
+# Instrumentalness pie
+instPie <- plot_ly(instCount, labels = ~instrumentalness, values = ~n, type = 'pie') %>%
+  layout(title = 'Instrumentalness of Top Tracks',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+plotly_build(instPie)
+
 # LIVENESS
 live <- select(tracks, name, artists, liveness)
 
@@ -147,6 +157,10 @@ p2 <- plot_ly(durationAvg, type="bar",
               marker = (list(color = c)))
 plotly_build(p2)
 
+# Histogram perhaps
+durHist <- plot_ly(tracks, x = ~duration_ms) %>% add_histogram(name = "duration_ms")
+plotly_build(durHist)
+
 # CHANGE TIME IN MS TO HUMAN TIME (minutes and seconds)
 trackTime <- tracks %>% select(name, duration_ms) %>% 
                     mutate(duration = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
@@ -186,6 +200,35 @@ p3 <- plot_ly(tracks, type="scatter",
          xaxis = list(zeroline = FALSE),
          font = t3)
 plotly_build(p3)
+
+# DISTINCTNESS — Yes this is repetitive
+danceDist <- n_distinct(tracks$danceability)
+energyDist <- n_distinct(tracks$energy)
+keyDist <- n_distinct(tracks$key)
+loudDist <- n_distinct(tracks$loudness)
+modeDist <- n_distinct(tracks$mode)
+speechDist <- n_distinct(tracks$speechiness)
+acoustDist <- n_distinct(tracks$acousticness)
+instDist <- n_distinct(tracks$instrumentalness)
+liveDist <- n_distinct(tracks$liveness)
+valenceDist <- n_distinct(tracks$valence)
+tempoDist <- n_distinct(tracks$tempo)
+durationDist <- n_distinct(tracks$duration_ms)
+timeDist <- n_distinct(tracks$time_signature)
+
+distinctness <- c(danceDist, energyDist, keyDist, loudDist, modeDist,
+                  speechDist, acoustDist, instDist, liveDist, valenceDist,
+                  tempoDist, durationDist, timeDist)
+
+distList <- c("Danceability", "Energy", "Key", "Loudness", "Mode", "Speechiness",
+              "Acousticness", "Instrumentalness", "Liveness", "Valence",
+              "Tempo", "Duration", "Time Signature")
+
+distDF <- as.data.frame(distinctness, distList)
+distDF <- rownames_to_column(distDF, "metric")
+
+distBar <- plot_ly(distDF, x = ~metric, y = ~ distinctness, type = "bar")
+plotly_build(distBar)
 
 # ED SHEERAN
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
