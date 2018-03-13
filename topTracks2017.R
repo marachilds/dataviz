@@ -1,6 +1,7 @@
 # Load dependencies
 library(plotly)
 library(dplyr)
+library(tidyr)
 library(tibble)
 
 # Set working directory
@@ -9,7 +10,9 @@ setwd("~/Google Drive/School/GSA 2017-2018/7-Data Visualization/dataviz")
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 
-# Isolating each metric so I can examine each one individually first
+# Isolating each metric so I can examine each one individually first, I could have just used the tracks
+# dataframe and targeted each column but I wasn't sure of what I would be doing later so I made
+# them most manageable to begin with
 
 # ARTISTS
 artists <- select(tracks, name, artists)
@@ -135,11 +138,11 @@ durationAvg$y <- factor(durationAvg$name, levels = unique(durationAvg$name)[orde
 # Alternatively, set row number to column called number to replace "~y"
 # duration_asc <- rownames_to_column(duration_asc, "number")
 
-p1 <- plot_ly(durationAvg, type="bar",
+duration1 <- plot_ly(durationAvg, type="bar",
               orientation="h",
               x = ~duration_ms,
               y = ~y)
-plotly_build(p1)
+plotly_build(duration1)
 
 # Let's change some colors
 # Add column to handle plotly colors, this might be a yikes
@@ -150,12 +153,12 @@ durationAvg[1, "color"] <- "rgba(222,45,38,0.8)"
 c <- as.vector(durationAvg$color)
   
 # Another chart, this time with the average
-p2 <- plot_ly(durationAvg, type="bar",
+duration2 <- plot_ly(durationAvg, type="bar",
               orientation="h",
               x = ~duration_ms,
               y = ~y,
               marker = (list(color = c)))
-plotly_build(p2)
+plotly_build(duration2)
 
 # Histogram perhaps
 durHist <- plot_ly(tracks, x = ~duration_ms) %>% add_histogram(name = "duration_ms")
@@ -181,57 +184,47 @@ subplot(
   nrows = 4, shareX = TRUE
 )
 
-# CROSS EXAMINATION WITH SCATTERPLOT
-# Let's make a scatter plot
-t3 <- list(family = "sans-serif",
-           size = 12,
-           color = "black")
+# DISTINCTNESS
+trackDistinct <- summarise_all(tracks, funs(n_distinct))
+trackDistinctDF <- gather(trackDistinct, "metric", "distinctness", 1:16)
+distBar <- plot_ly(trackDistinctDF, x = ~metric, y = ~ distinctness, type = "bar")
+plotly_build(distBar)
 
-p3 <- plot_ly(tracks, type="scatter",
+# Scatterplot
+t <- list(family = "sans-serif",
+          size = 12,
+          color = "black")
+p1 <- plot_ly(tracks, type="scatter",
               mode="markers",
-              x = ~tempo,
-              y = ~danceability,
-              size = ~loudness,
-              color = ~(-acousticness),
+              x = ~energy,
+              y = ~loudness,
+              # size = ~speechiness,
+              color = ~(-duration_ms),
               colors = "BuPu",
               text = ~paste(name, "<br>", artists)) %>% 
-  layout(title = "Spotify's Top Tracks 2017",
+  layout(title = "Loudness - Energy",
          yaxis = list(zeroline = FALSE),
          xaxis = list(zeroline = FALSE),
-         font = t3)
-plotly_build(p3)
-
-# DISTINCTNESS — Yes this is repetitive
-danceDist <- n_distinct(tracks$danceability)
-energyDist <- n_distinct(tracks$energy)
-keyDist <- n_distinct(tracks$key)
-loudDist <- n_distinct(tracks$loudness)
-modeDist <- n_distinct(tracks$mode)
-speechDist <- n_distinct(tracks$speechiness)
-acoustDist <- n_distinct(tracks$acousticness)
-instDist <- n_distinct(tracks$instrumentalness)
-liveDist <- n_distinct(tracks$liveness)
-valenceDist <- n_distinct(tracks$valence)
-tempoDist <- n_distinct(tracks$tempo)
-durationDist <- n_distinct(tracks$duration_ms)
-timeDist <- n_distinct(tracks$time_signature)
-
-distinctness <- c(danceDist, energyDist, keyDist, loudDist, modeDist,
-                  speechDist, acoustDist, instDist, liveDist, valenceDist,
-                  tempoDist, durationDist, timeDist)
-
-distList <- c("Danceability", "Energy", "Key", "Loudness", "Mode", "Speechiness",
-              "Acousticness", "Instrumentalness", "Liveness", "Valence",
-              "Tempo", "Duration", "Time Signature")
-
-distDF <- as.data.frame(distinctness, distList)
-distDF <- rownames_to_column(distDF, "metric")
-
-distBar <- plot_ly(distDF, x = ~metric, y = ~ distinctness, type = "bar")
-plotly_build(distBar)
+         font = t)
+plotly_build(p1)
 
 # ED SHEERAN
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
+ed1 <- plot_ly(ed, x = ~name, y = ~danceability, type = "bar")
+plotly_build(ed1)
+edAvgDance <- mean(ed$danceability)
+edAvgEnergy
+edAvgLoud
+edAvgSpeech
+edAvgAcoust
+edAvgInst
+edAvgLive
+edAvgVal
+edAvgTemp
+edAvg
 
 # THE CHAINSMOKERS
 tsc <- filter(tracks, grepl("The Chainsmokers", artists))
+tsc1 <- plot_ly(tsc, x = ~name, y = ~danceability, type = "bar")
+plotly_build(tsc1)
+tscAvgDance <- mean(tsc$danceability)
