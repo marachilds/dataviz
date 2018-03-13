@@ -3,7 +3,10 @@ library(plotly)
 library(dplyr)
 library(tidyr)
 library(tibble)
+library(ggplot2)
+library(reshape2)
 
+# SWD to source file location
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 
@@ -39,7 +42,9 @@ plotly_build(energyHist)
 
 # KEY
 key <- select(tracks, name, artists, key) 
+keyNames <- c("C", "C♯", "D", "	D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
 keyCount <- key %>% count(key)
+keyCount$key <- keyNames
 
 # Key bar chart
 keyChart <- plot_ly(keyCount, x = ~key, y = ~n, type = "bar")
@@ -205,6 +210,10 @@ p1 <- plot_ly(tracks, type="scatter",
          font = t)
 plotly_build(p1)
 
+# CORRELATION HEAT MAP
+trackNum <- select(tracks, -id, -name, -artists)
+qplot(x=Var1, y=Var2, data=melt(cor(trackNum)), fill=value, geom="tile")
+
 # ED SHEERAN
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
 ed1 <- plot_ly(ed, x = ~name, y = ~danceability, type = "bar")
@@ -242,3 +251,5 @@ avgCompare <- plot_ly(allAvgCompareX, x = ~metric, y = ~Ed, type = 'bar', name =
   add_trace(y = ~All, name = "All Track Average") %>% 
   layout(yaxis = list(title = 'Count'), barmode = 'group')
 plotly_build(avgCompare)
+
+# allSummary <- as.data.frame(summary(tracks)) %>% select(Var2, Freq)

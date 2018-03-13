@@ -3,6 +3,7 @@ library(plotly)
 library(dplyr)
 library(tibble)
 
+# SWD to source file location
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 
