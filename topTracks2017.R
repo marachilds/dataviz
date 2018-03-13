@@ -212,10 +212,36 @@ plotly_build(p1)
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
 ed1 <- plot_ly(ed, x = ~name, y = ~danceability, type = "bar")
 plotly_build(ed1)
-
+edSummary <- select(ed, danceability, energy, loudness, speechiness, acousticness, liveness,
+                    valence, tempo, duration_ms) %>% 
+                    summarise_all(funs(mean))
+edBar <- gather(edSummary, "metric", "average", 1:9)
 
 # THE CHAINSMOKERS
 tsc <- filter(tracks, grepl("The Chainsmokers", artists))
 tsc1 <- plot_ly(tsc, x = ~name, y = ~danceability, type = "bar")
 plotly_build(tsc1)
-tscAvgDance <- mean(tsc$danceability)
+tscSummary <- select(tsc, danceability, energy, loudness, speechiness, acousticness, liveness,
+                     valence, tempo, duration_ms) %>% 
+                     summarise_all(funs(mean))
+tscBar <- gather(tscSummary, "metric", "average", 1:9)
+
+# ALL TRACK AVERAGES
+trackAvg <- select(tracks, danceability, energy, loudness, speechiness, acousticness, liveness,
+                   valence, tempo, duration_ms) %>% 
+                   summarise_all(funs(mean))
+trackAvgBar <- gather(trackAvg, "metric", "average", 1:9)
+
+# Compare Ed, TSC, and all track averages
+topTwoCompare <- left_join(edBar, tscBar, by = "metric")
+allAvgCompare <- left_join(topTwoCompare, trackAvgBar, by = "metric")
+avgName <- c("metric", "Ed", "TSC", "All")
+names(allAvgCompare) <- avgName
+allAvgCompareX <- slice(allAvgCompare, 1:7)
+allAvgCompareX <- slice(allAvgCompareX, -3)
+
+avgCompare <- plot_ly(allAvgCompareX, x = ~metric, y = ~Ed, type = 'bar', name = "Ed Sheeran") %>%
+  add_trace(y = ~TSC, name = "The Chainsmokers") %>%
+  add_trace(y = ~All, name = "All Track Average") %>% 
+  layout(yaxis = list(title = 'Count'), barmode = 'group')
+plotly_build(avgCompare)
