@@ -3,9 +3,6 @@ library(plotly)
 library(dplyr)
 library(tibble)
 
-# Set working directory
-setwd("~/Google Drive/School/GSA 2017-2018/7-Data Visualization/dataviz")
-
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 
