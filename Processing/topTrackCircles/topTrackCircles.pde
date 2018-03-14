@@ -17,10 +17,15 @@ String energy;
 float energyFloat;
 float energyEnd;
 
-// Loudness
-String loud;
-float loudness;
-float loudEnd;
+// Valence
+String val;
+float valence;
+float valenceEnd;
+
+// Acousticness
+String acoust;
+float acoustic;
+float acousticEnd;
 
 void setup() {
   colorMode(RGB);
@@ -42,17 +47,20 @@ void draw(){
     // Get numbers
     dance = row[3];
     energy = row[4];
-    loud = row[6];
+    val = row[12];
+    acoust = row[9];
     
     // Strings to float
     danceability = float(dance);
     energyFloat = float(energy);
-    loudness = float(loud);
+    valence = float(val);
+    acoustic = float(acoust);
     
     // Map values to 2PI Radians
     danceEnd = map(danceability, 0, 1, 0, TWO_PI);
     energyEnd = map(energyFloat, 0, 1, 0, TWO_PI);
-    loudEnd = map(loudness, -12, -2, 0, TWO_PI);
+    valenceEnd = map(valence, 0, 1, 0, TWO_PI);
+    acousticEnd = map(acoustic, 0, 1, 0, TWO_PI);
     
     // Line styling
     strokeWeight(4);
@@ -68,15 +76,19 @@ void draw(){
     // println(i + " " + y + " " + line + " " + x);
     
     // Draw danceability circles
-    stroke(255, 45, 45);
+    stroke(89, 63, 98);
     arc(x, y, 80, 80, -HALF_PI, -HALF_PI+danceEnd);
     
     // Draw energy circles
-    stroke(38, 164, 255);
+    stroke(123, 109, 141);
     arc(x, y, 65, 65, -HALF_PI, -HALF_PI+energyEnd);
     
     // Draw loudness circles
-    stroke(255, 240, 38);
-    arc(x, y, 50, 50, -HALF_PI, -HALF_PI+loudEnd);
+    stroke(132, 153, 177);
+    arc(x, y, 50, 50, -HALF_PI, -HALF_PI+valenceEnd);
+    
+    // Draw acousticness circles
+    stroke(165, 196, 212);
+    arc(x, y, 35, 35, -HALF_PI, -HALF_PI+acousticEnd);
   }
 }
