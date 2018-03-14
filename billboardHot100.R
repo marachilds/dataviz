@@ -26,4 +26,45 @@ summary2015 <- year2015 %>%
 allAvg <- allYears %>% group_by(year) %>% summarise_all(mean)
 
 # Explicitness
-explicitBar <- 
+explicitBar <- plot_ly(allAvg, x = ~year, y = ~explicit, type = "bar")
+plotly_build(explicitBar)
+
+# Danceability
+danceBar <- plot_ly(allAvg, x = ~year, y = ~danceability, type = "bar")
+plotly_build(danceBar)
+
+# Energy
+energyBar <- plot_ly(allAvg, x = ~year, y = ~energy, type = "bar")
+plotly_build(energyBar)
+
+# Loudness
+loudBar <- plot_ly(allAvg, x = ~year, y = ~loudness, type = "bar")
+plotly_build(loudBar)
+
+# Speechiness
+speechBar <- plot_ly(allAvg, x = ~year, y = ~speechiness, type = "bar")
+plotly_build(speechBar)
+
+# Acousticness
+acoustBar <- plot_ly(allAvg, x = ~year, y = ~acousticness, type = "bar")
+plotly_build(acoustBar)
+
+# Instrumentalness
+instBar <- plot_ly(allAvg, x = ~year, y = ~instrumentalness, type = "bar")
+plotly_build(instBar)
+
+# Liveness
+liveBar <- plot_ly(allAvg, x = ~year, y = ~liveness, type = "bar")
+plotly_build(liveBar)
+
+# Valence
+valBar <- plot_ly(allAvg, x = ~year, y = ~valence, type = "bar")
+plotly_build(valBar)
+
+# Tempo
+tempoBar <- plot_ly(allAvg, x = ~year, y = ~tempo, type = "bar")
+plotly_build(tempoBar)
+
+# Duration
+durationBar <- plot_ly(allAvg, x = ~year, y = ~duration_ms, type = "bar")
+plotly_build(durationBar)
