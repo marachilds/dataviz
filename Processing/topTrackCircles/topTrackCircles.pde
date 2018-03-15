@@ -1,3 +1,5 @@
+import processing.pdf.*;
+
 String [] rawData;
 int count;
 // Define font later
@@ -26,6 +28,16 @@ float valenceEnd;
 String acoust;
 float acoustic;
 float acousticEnd;
+
+boolean savePDF = true;
+
+void settings() {
+  if (savePDF) {
+    size(1000, 1000, PDF, "plot.pdf");
+  } else {
+    size(1000, 1000);
+  }
+} 
 
 void setup() {
   colorMode(RGB);
@@ -90,5 +102,8 @@ void draw(){
     // Draw acousticness circles
     stroke(165, 196, 212);
     arc(x, y, 35, 35, -HALF_PI, -HALF_PI+acousticEnd);
+  }
+  if (savePDF) {
+    exit();
   }
 }

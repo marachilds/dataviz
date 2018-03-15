@@ -1,5 +1,6 @@
 # Libraries
 library(dplyr)
+library(plotly)
 
 # Load in rda from github
 load(file = "data/spotify_track_data.rda")
