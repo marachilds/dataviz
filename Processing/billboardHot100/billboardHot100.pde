@@ -43,7 +43,7 @@ void setup() {
   colorMode(RGB);
   size(1000, 1000);
   // Read in raw data
-  rawData = loadStrings("toptracks2017.csv");
+  rawData = loadStrings("billboardHot100.csv");
   // Length of data
   count = rawData.length;
   // Run draw once
@@ -57,10 +57,10 @@ void draw(){
     String row [] =  split(rawData[i], ",");
     
     // Get numbers
-    dance = row[3];
-    energy = row[4];
-    val = row[12];
-    acoust = row[9];
+    dance = row[7];
+    energy = row[8];
+    val = row[16];
+    acoust = row[13];
     
     // Strings to float
     danceability = float(dance);
@@ -88,19 +88,19 @@ void draw(){
     // println(i + " " + y + " " + line + " " + x);
     
     // Draw danceability circles
-    stroke(69, 27, 99);
+    stroke(26, 40, 114);
     arc(x, y, 80, 80, -HALF_PI, -HALF_PI+danceEnd);
     
     // Draw energy circles
-    stroke(122, 47, 147);
+    stroke(49, 99, 159);
     arc(x, y, 65, 65, -HALF_PI, -HALF_PI+energyEnd);
     
     // Draw loudness circles
-    stroke(211, 80, 136);
+    stroke(73, 167, 201);
     arc(x, y, 50, 50, -HALF_PI, -HALF_PI+valenceEnd);
     
     // Draw acousticness circles
-    stroke(239, 155, 156);
+    stroke(160, 213, 205);
     arc(x, y, 35, 35, -HALF_PI, -HALF_PI+acousticEnd);
   }
   if (savePDF) {

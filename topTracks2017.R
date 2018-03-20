@@ -253,3 +253,9 @@ avgCompare <- plot_ly(allAvgCompareX, x = ~metric, y = ~Ed, type = 'bar', name =
 plotly_build(avgCompare)
 
 # allSummary <- as.data.frame(summary(tracks)) %>% select(Var2, Freq)
+
+# All value averages to CSV
+writeAverages <- allAvgCompare %>% 
+                 select(metric, All) %>% 
+                 spread(metric, All)
+write.csv(writeAverages, "avg2017.csv")

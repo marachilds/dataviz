@@ -1,5 +1,6 @@
 # Libraries
 library(dplyr)
+library(tidyr)
 library(plotly)
 
 # Load in rda from github
@@ -23,8 +24,17 @@ summary2015 <- year2015 %>%
                       instrumentalness, liveness, valence, tempo) %>%
                summarise_all(funs(mean))
 
+# Differences between 1960 and 2015
+df1960 <- gather(summary1960, "metric", "year1960")
+df2015 <- gather(summary2015, "metric", "year2015")
+rangePastToPresent <- left_join(df1960, df2015, by = "metric") %>% 
+                      mutate(change = year2015 - year1960)
+
 # Aggregate examination
 allAvg <- allYears %>% group_by(year) %>% summarise_all(mean)
+
+# Use to write averages to CSV for Processing
+write.csv(allAvg, file = "billboardHot100.csv")
 
 # Explicitness
 explicitBar <- plot_ly(allAvg, x = ~year, y = ~explicit, type = "bar")

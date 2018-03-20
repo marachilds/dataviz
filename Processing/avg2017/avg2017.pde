@@ -43,7 +43,7 @@ void setup() {
   colorMode(RGB);
   size(1000, 1000);
   // Read in raw data
-  rawData = loadStrings("toptracks2017.csv");
+  rawData = loadStrings("avg2017.csv");
   // Length of data
   count = rawData.length;
   // Run draw once
@@ -57,10 +57,10 @@ void draw(){
     String row [] =  split(rawData[i], ",");
     
     // Get numbers
-    dance = row[3];
+    dance = row[2];
     energy = row[4];
-    val = row[12];
-    acoust = row[9];
+    val = row[9];
+    acoust = row[1];
     
     // Strings to float
     danceability = float(dance);
