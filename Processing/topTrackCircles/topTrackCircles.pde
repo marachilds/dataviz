@@ -88,19 +88,19 @@ void draw(){
     // println(i + " " + y + " " + line + " " + x);
     
     // Draw danceability circles
-    stroke(89, 63, 98);
+    stroke(84, 169, 255);
     arc(x, y, 80, 80, -HALF_PI, -HALF_PI+danceEnd);
     
     // Draw energy circles
-    stroke(123, 109, 141);
+    stroke(255, 84, 109);
     arc(x, y, 65, 65, -HALF_PI, -HALF_PI+energyEnd);
     
     // Draw loudness circles
-    stroke(132, 153, 177);
+    stroke(255, 255, 94);
     arc(x, y, 50, 50, -HALF_PI, -HALF_PI+valenceEnd);
     
     // Draw acousticness circles
-    stroke(165, 196, 212);
+    stroke(94, 255, 155);
     arc(x, y, 35, 35, -HALF_PI, -HALF_PI+acousticEnd);
   }
   if (savePDF) {

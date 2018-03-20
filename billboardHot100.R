@@ -5,7 +5,7 @@ library(plotly)
 # Load in rda from github
 load(file = "data/spotify_track_data.rda")
 
-# Rename to allYears
+# Rename to allYears because I am high maintenance
 allYears <- spotify_track_data
 
 # Let's look at the extremes first
