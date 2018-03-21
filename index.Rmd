@@ -42,3 +42,4 @@ The top 100 tracks may be 100 individual songs, but there were `r nrow(topArtist
 artistCol <- c("Artist Name","Number of Tracks")
 kable(topArtists, row.names = NA, col.names = artistCol, caption = "Artists With More Than One Track")
 ```
+

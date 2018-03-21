@@ -5,6 +5,7 @@ library(tidyr)
 library(tibble)
 library(ggplot2)
 library(reshape2)
+library(knitr)
 
 # SWD to source file location
 # Read in Spotify Top Songs 2017 csv
@@ -18,129 +19,136 @@ tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 artists <- select(tracks, name, artists)
 
 # Tracks per artist
-artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
-totalArtists <- nrow(artistPopularity)
-topArtists <- artistPopularity %>% filter(n > 1)
+artist_popularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+total_artists <- nrow(artist_popularity)
+top_artists <- artist_popularity %>% filter(n > 1)
 
 # Top artists table
-artistCol <- c("Artist Name","Number of Tracks")
-kable(topArtists, row.names = NA, col.names = artistCol, caption = "Artists With More Than One Track")
+artist_col <- c("Artist Name","Number of Tracks")
+kable(top_artists, row.names = NA, col.names = artist_col, caption = "Artists With More Than One Track")
 
-# DANCEABILITY
+# DANCEABILITY ---------------------------------------------------------------------------------------------
 dance <- select(tracks, name, artists, danceability)
 
 # Danceability histogram
-danceHist <- plot_ly(dance, x = ~danceability) %>% add_histogram(name = "danceability")
-plotly_build(danceHist)
+dance_hist <- plot_ly(dance, x = ~danceability) %>% add_histogram(name = "danceability")
+plotly_build(dance_hist)
 
-# ENERGY
+danceability_max_track <- tracks[tracks$danceability == max(tracks$danceability), 2]
+danceability_max_artist <- tracks[tracks$danceability == max(tracks$danceability), 3]
+danceability_min_track
+
+# ENERGY ---------------------------------------------------------------------------------------------------
 energy <- select(tracks, name, artists, energy)
 
 # Energy histogram
-energyHist <- plot_ly(energy, x = ~energy) %>% add_histogram(name = "energy")
-plotly_build(energyHist)
+energy_hist <- plot_ly(energy, x = ~energy) %>% add_histogram(name = "energy")
+plotly_build(energy_hist)
 
-# KEY
+# KEY ------------------------------------------------------------------------------------------------------
 key <- select(tracks, name, artists, key) 
-keyNames <- c("C", "C♯", "D", "	D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
-keyCount <- key %>% count(key)
-keyCount$key <- keyNames
+key_names <- c("C", "C♯", "D", "	D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
+key_count <- key %>% count(key)
+key_count$key <- key_names
 
 # Key bar chart
-keyChart <- plot_ly(keyCount, x = ~key, y = ~n, type = "bar")
-plotly_build(keyChart)
+key_chart <- plot_ly(key_count, x = ~key, y = ~n, type = "bar")
+plotly_build(key_chart)
 
-# LOUDNESS
+# LOUDNESS -------------------------------------------------------------------------------------------------
 loud <- select(tracks, name, artists, loudness)
 
 # Loudness histogram
-loudHist <- plot_ly(loud, x = ~loudness) %>% add_histogram(name = "loudness")
-plotly_build(loudHist)
+loud_hist <- plot_ly(loud, x = ~loudness) %>% add_histogram(name = "loudness")
+plotly_build(loud_hist)
 
-# MODE (1 Major or 0 Minor)
+# MODE (1 Major or 0 Minor)  -------------------------------------------------------------------------------
 mode <- select(tracks, name, artists, mode)
-modeCount <- mode %>% count(mode)
+mode_count <- mode %>% count(mode)
 
 # Mode pie chart (One might even say...pie ala mode haha)
-modePie <- plot_ly(modeCount, labels = ~mode, values = ~n, type = 'pie') %>%
+mode_pie <- plot_ly(mode_count, labels = ~mode, values = ~n, type = 'pie') %>%
   layout(title = 'Modes of the Top Tracks',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-plotly_build(modePie)
+plotly_build(mode_pie)
 
-# SPEECHINESS
+# SPEECHINESS ---------------------------------------------------------------------------------------------
 speech <- select(tracks, name, artists, speechiness)
 
 # Speechiness histogram
-speechHist <- plot_ly(speech, x = ~speechiness) %>% add_histogram(name = "speechiness")
-plotly_build(speechHist)
+speech_hist <- plot_ly(speech, x = ~speechiness) %>% add_histogram(name = "speechiness")
+plotly_build(speech_hist)
 
-# ACOUSTICNESS
+# ACOUSTICNESS ---------------------------------------------------------------------------------------------
 acoustic <- select(tracks, name, artists, acousticness)
 
 # Acousticness histogram
-acoustHist <- plot_ly(acoustic, x = ~acousticness) %>% add_histogram(name = "acousticness")
-plotly_build(acoustHist)
+acoust_hist <- plot_ly(acoustic, x = ~acousticness) %>% add_histogram(name = "acousticness")
+plotly_build(acoust_hist)
 
-# INSTRUMENTALNESS — NEED TO WORK ON THIS
+# INSTRUMENTALNESS — NEED TO WORK ON THIS ------------------------------------------------------------------
 instrumental <- select(tracks, name, artists, instrumentalness)
 
 # Instrumentalness histogram
-instHist <- plot_ly(instrumental, x = ~instrumentalness) %>% add_histogram(name = "instrumentalness")
-plotly_build(instHist)
+instrumentalness_hist <- plot_ly(instrumental, x = ~instrumentalness) %>% 
+                         add_histogram(name = "instrumentalness")
+plotly_build(instrumentalness_hist)
 
 # Instrumentalness bar
-instBar <- plot_ly(instrumental, x = ~name, y = ~instrumentalness, type = "bar")
-plotly_build(instBar)
+instrumentalness_bar <- plot_ly(instrumental, x = ~name, y = ~instrumentalness, type = "bar")
+plotly_build(instrumentalness_bar)
 
 # Instrumentalness count
-instCount <- instrumental %>% count(instrumentalness)
+instrumentalness_count <- instrumental %>% count(instrumentalness)
 
 # Instrumentalness pie
-instPie <- plot_ly(instCount, labels = ~instrumentalness, values = ~n, type = 'pie') %>%
+instrumentalness_pie <- plot_ly(instrumentalness_count, labels = ~instrumentalness, values = ~n, type = 'pie') %>%
   layout(title = 'Instrumentalness of Top Tracks',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-plotly_build(instPie)
+plotly_build(instrumentalness_pie)
 
-# LIVENESS
-live <- select(tracks, name, artists, liveness)
+# LIVENESS -------------------------------------------------------------------------------------------------
+liveness <- select(tracks, name, artists, liveness)
 
 # Liveness histogram
-liveHist <- plot_ly(live, x = ~liveness) %>% add_histogram(name = "liveness")
-plotly_build(liveHist)
+liveness_hist <- plot_ly(liveness, x = ~liveness) %>% add_histogram(name = "liveness")
+plotly_build(liveness_hist)
 
-# VALENCE
+# VALENCE --------------------------------------------------------------------------------------------------
 valence <- select(tracks, name, artists, valence)
 
 # Liveness histogram
-valenceHist <- plot_ly(valence, x = ~valence) %>% add_histogram(name = "valence")
-plotly_build(valenceHist)
+valence_hist <- plot_ly(valence, x = ~valence) %>% add_histogram(name = "valence")
+plotly_build(valence_hist)
 
-# TEMPO
+# TEMPO ----------------------------------------------------------------------------------------------------
 tempo <- select(tracks, name, artists, tempo)
 
 # Tempo histogram
-tempoHist <- plot_ly(tempo, x = ~tempo) %>% add_histogram(name = "tempo")
-plotly_build(tempoHist)
+tempo_hist <- plot_ly(tempo, x = ~tempo) %>% add_histogram(name = "tempo")
+plotly_build(tempo_hist)
 
-#DURATION
+#DURATION --------------------------------------------------------------------------------------------------
 # Tracks by ascending duration
-durationAsc <- arrange(tracks, duration_ms) %>% select(name, duration_ms)
+duration_asc <- arrange(tracks, duration_ms) %>% select(name, duration_ms)
 
 # Add average duration in ms
-durationAvg <- durationAsc %>% 
+duration_avg <- duration_asc %>% 
   summarise(name = "Average Length",
             duration_ms = mean(duration_ms)) %>% 
-  bind_rows(durationAsc)
+  bind_rows(duration_asc)
 
 # Set factor level order for top-bottom ascending duration
-durationAvg$y <- factor(durationAvg$name, levels = unique(durationAvg$name)[order(durationAvg$duration_ms, decreasing = TRUE)])
+duration_avg$y <- factor(duration_avg$name,
+                         levels = unique(duration_avg$name)[order(duration_avg$duration_ms, 
+                         decreasing = TRUE)])
 
 # Alternatively, set row number to column called number to replace "~y"
 # duration_asc <- rownames_to_column(duration_asc, "number")
 
-duration1 <- plot_ly(durationAvg, type="bar",
+duration1 <- plot_ly(duration_avg, type="bar",
               orientation="h",
               x = ~duration_ms,
               y = ~y)
@@ -148,14 +156,14 @@ plotly_build(duration1)
 
 # Let's change some colors
 # Add column to handle plotly colors, this might be a yikes
-durationAvg$color <- "rgba(204,204,204,1)"
-durationAvg[1, "color"] <- "rgba(222,45,38,0.8)"
+duration_avg$color <- "rgba(204,204,204,1)"
+duration_avg[1, "color"] <- "rgba(222,45,38,0.8)"
 
 # Make it into a list
-c <- as.vector(durationAvg$color)
+c <- as.vector(duration_avg$color)
   
 # Another chart, this time with the average
-duration2 <- plot_ly(durationAvg, type="bar",
+duration2 <- plot_ly(duration_avg, type="bar",
               orientation="h",
               x = ~duration_ms,
               y = ~y,
@@ -163,34 +171,34 @@ duration2 <- plot_ly(durationAvg, type="bar",
 plotly_build(duration2)
 
 # Histogram perhaps
-durHist <- plot_ly(tracks, x = ~duration_ms) %>% add_histogram(name = "duration_ms")
-plotly_build(durHist)
+duration_hist <- plot_ly(tracks, x = ~duration_ms) %>% add_histogram(name = "duration_ms")
+plotly_build(duration_hist)
 
 # CHANGE TIME IN MS TO HUMAN TIME (minutes and seconds)
-trackTime <- tracks %>% select(name, duration_ms) %>% 
+track_time <- tracks %>% select(name, duration_ms) %>% 
                     mutate(duration = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
 
-# TIME SIGNATURE
+# TIME SIGNATURE  ------------------------------------------------------------------------------------------
 time <- count(tracks, time_signature)
 
 # Time pie (no pun this time, sorry)
-timePie <- plot_ly(time, labels = ~time_signature, values = ~n, type = 'pie') %>%
+time_pie <- plot_ly(time, labels = ~time_signature, values = ~n, type = 'pie') %>%
   layout(title = 'Modes of the Top Tracks',
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-plotly_build(timePie)
+plotly_build(time_pie)
 
 # Observing multiple histograms that have values between 0 and 1
 subplot(
-  danceHist, energyHist, valenceHist, acoustHist,
+  dance_hist, energy_hist, valence_hist, acoust_hist,
   nrows = 4, shareX = TRUE
 )
 
-# DISTINCTNESS
-trackDistinct <- summarise_all(tracks, funs(n_distinct))
-trackDistinctDF <- gather(trackDistinct, "metric", "distinctness", 1:16)
-distBar <- plot_ly(trackDistinctDF, x = ~metric, y = ~ distinctness, type = "bar")
-plotly_build(distBar)
+# DISTINCTNESS ---------------------------------------------------------------------------------------------
+track_distinct <- summarise_all(tracks, funs(n_distinct))
+track_distinct_df <- gather(track_distinct, "metric", "distinctness", 1:16)
+dist_bar <- plot_ly(track_distinct_df, x = ~metric, y = ~ distinctness, type = "bar")
+plotly_build(dist_bar)
 
 # Scatterplot
 t <- list(family = "sans-serif",
@@ -210,52 +218,52 @@ p1 <- plot_ly(tracks, type="scatter",
          font = t)
 plotly_build(p1)
 
-# CORRELATION HEAT MAP
-trackNum <- select(tracks, -id, -name, -artists)
-qplot(x=Var1, y=Var2, data=melt(cor(trackNum)), fill=value, geom="tile")
+# CORRELATION HEAT MAP -------------------------------------------------------------------------------------
+track_num <- select(tracks, -id, -name, -artists)
+qplot(x=Var1, y=Var2, data=melt(cor(track_num)), fill=value, geom="tile")
 
-# ED SHEERAN
+# ED SHEERAN -----------------------------------------------------------------------------------------------
 ed <- filter(tracks, grepl("Ed Sheeran", artists))
 ed1 <- plot_ly(ed, x = ~name, y = ~danceability, type = "bar")
 plotly_build(ed1)
-edSummary <- select(ed, danceability, energy, loudness, speechiness, acousticness, liveness,
+ed_summary <- select(ed, danceability, energy, loudness, speechiness, acousticness, liveness,
                     valence, tempo, duration_ms) %>% 
                     summarise_all(funs(mean))
-edBar <- gather(edSummary, "metric", "average", 1:9)
+ed_bar <- gather(ed_summary, "metric", "average", 1:9)
 
-# THE CHAINSMOKERS
+# THE CHAINSMOKERS -----------------------------------------------------------------------------------------
 tsc <- filter(tracks, grepl("The Chainsmokers", artists))
 tsc1 <- plot_ly(tsc, x = ~name, y = ~danceability, type = "bar")
 plotly_build(tsc1)
-tscSummary <- select(tsc, danceability, energy, loudness, speechiness, acousticness, liveness,
+tsc_summary <- select(tsc, danceability, energy, loudness, speechiness, acousticness, liveness,
                      valence, tempo, duration_ms) %>% 
                      summarise_all(funs(mean))
-tscBar <- gather(tscSummary, "metric", "average", 1:9)
+tsc_bar <- gather(tsc_summary, "metric", "average", 1:9)
 
-# ALL TRACK AVERAGES
-trackAvg <- select(tracks, danceability, energy, loudness, speechiness, acousticness, liveness,
-                   valence, tempo, duration_ms) %>% 
-                   summarise_all(funs(mean))
-trackAvgBar <- gather(trackAvg, "metric", "average", 1:9)
+# ALL TRACK AVERAGES ---------------------------------------------------------------------------------------
+track_avg <- select(tracks, danceability, energy, loudness, speechiness, acousticness, liveness,
+                    valence, tempo, duration_ms) %>% 
+                    summarise_all(funs(mean))
+track_avg_bar <- gather(track_avg, "metric", "average", 1:9)
 
 # Compare Ed, TSC, and all track averages
-topTwoCompare <- left_join(edBar, tscBar, by = "metric")
-allAvgCompare <- left_join(topTwoCompare, trackAvgBar, by = "metric")
-avgName <- c("metric", "Ed", "TSC", "All")
-names(allAvgCompare) <- avgName
-allAvgCompareX <- slice(allAvgCompare, 1:7)
-allAvgCompareX <- slice(allAvgCompareX, -3)
+top_two_compare <- left_join(ed_bar, tsc_bar, by = "metric")
+all_avg_compare <- left_join(top_two_compare, track_avg_bar, by = "metric")
+avg_name <- c("metric", "Ed", "TSC", "All")
+names(all_avg_compare) <- avg_name
+all_avg_compareX <- slice(all_avg_compare, 1:7)
+all_avg_compareX <- slice(all_avg_compareX, -3)
 
-avgCompare <- plot_ly(allAvgCompareX, x = ~metric, y = ~Ed, type = 'bar', name = "Ed Sheeran") %>%
+avg_compare <- plot_ly(all_avg_compareX, x = ~metric, y = ~Ed, type = 'bar', name = "Ed Sheeran") %>%
   add_trace(y = ~TSC, name = "The Chainsmokers") %>%
   add_trace(y = ~All, name = "All Track Average") %>% 
   layout(yaxis = list(title = 'Count'), barmode = 'group')
-plotly_build(avgCompare)
+plotly_build(avg_compare)
 
 # allSummary <- as.data.frame(summary(tracks)) %>% select(Var2, Freq)
 
-# All value averages to CSV
-writeAverages <- allAvgCompare %>% 
+# All value averages to CSV --------------------------------------------------------------------------------
+write_averages <- all_avg_compare %>% 
                  select(metric, All) %>% 
                  spread(metric, All)
-write.csv(writeAverages, "avg2017.csv")
+write.csv(write_averages, "avg2017.csv")
