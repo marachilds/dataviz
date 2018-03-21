@@ -30,8 +30,8 @@ tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 artists <- tracks %>% select(name, artists)
 
 # Tracks per artist
-artistPopularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
-topArtists <- artistPopularity %>% filter(n > 1)
+artist_popularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+top_artists <- artist_popularity %>% filter(n > 1)
 ```
 
 ### Artists
@@ -39,7 +39,7 @@ The top 100 tracks may be 100 individual songs, but there were `r nrow(topArtist
 
 ```{r artist table, echo = FALSE}
 # Top artists table
-artistCol <- c("Artist Name","Number of Tracks")
-kable(topArtists, row.names = NA, col.names = artistCol, caption = "Artists With More Than One Track")
+artist_col <- c("Artist Name","Number of Tracks")
+kable(top_artists, row.names = NA, col.names = artist_col, caption = "Artists With More Than One Track")
 ```
 
