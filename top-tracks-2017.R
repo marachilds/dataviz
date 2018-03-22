@@ -34,9 +34,11 @@ dance <- select(tracks, name, artists, danceability)
 dance_hist <- plot_ly(dance, x = ~danceability) %>% add_histogram(name = "danceability")
 plotly_build(dance_hist)
 
+# Max and min
+# Yes this could have just made a new dataframe for max and  min
 danceability_max_track <- tracks[tracks$danceability == max(tracks$danceability), 2]
 danceability_max_artist <- tracks[tracks$danceability == max(tracks$danceability), 3]
-danceability_min_track
+danceability_min_track <- tracks[tracks$danceability == min(tracks$danceability), ]
 
 # ENERGY ---------------------------------------------------------------------------------------------------
 energy <- select(tracks, name, artists, energy)
@@ -45,9 +47,13 @@ energy <- select(tracks, name, artists, energy)
 energy_hist <- plot_ly(energy, x = ~energy) %>% add_histogram(name = "energy")
 plotly_build(energy_hist)
 
+# Max and min
+energy_max_track <- tracks[tracks$energy == max(tracks$energy), ]
+energy_min_track <- tracks[tracks$energy == min(tracks$energy), ]
+
 # KEY ------------------------------------------------------------------------------------------------------
 key <- select(tracks, name, artists, key) 
-key_names <- c("C", "C♯", "D", "	D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
+key_names <- c("C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
 key_count <- key %>% count(key)
 key_count$key <- key_names
 
@@ -62,13 +68,23 @@ loud <- select(tracks, name, artists, loudness)
 loud_hist <- plot_ly(loud, x = ~loudness) %>% add_histogram(name = "loudness")
 plotly_build(loud_hist)
 
+# Max and min
+loudness_max_track <- tracks[tracks$loudness == max(tracks$loudness), ]
+loudness_min_track <- tracks[tracks$loudness == min(tracks$loudness), ]
+
 # MODE (1 Major or 0 Minor)  -------------------------------------------------------------------------------
-mode <- select(tracks, name, artists, mode)
-mode_count <- mode %>% count(mode)
+mode_count <- tracks %>% count(mode)
+total_major <- mode_count[mode_count$mode == 1, 2]
+total_minor <- mode_count[mode_count$mode == 0, 2]
+mode_names <- c("minor", "major")
+mode_count <- mode_count %>% mutate(name = mode_names)
 
 # Mode pie chart (One might even say...pie ala mode haha)
-mode_pie <- plot_ly(mode_count, labels = ~mode, values = ~n, type = 'pie') %>%
-  layout(title = 'Modes of the Top Tracks',
+mode_pie <- plot_ly(mode_count, labels = ~name, values = ~n, type = "pie",
+                    textposition = "inside",
+                    textinfo = "label",
+                    insidetextfont = list(color = '#FFFFFF')) %>%
+  layout(title = "Modes of the Top Tracks",
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 plotly_build(mode_pie)
@@ -80,12 +96,20 @@ speech <- select(tracks, name, artists, speechiness)
 speech_hist <- plot_ly(speech, x = ~speechiness) %>% add_histogram(name = "speechiness")
 plotly_build(speech_hist)
 
+# Max and min
+speechiness_max_track <- tracks[tracks$speechiness == max(tracks$speechiness), ]
+speechiness_min_track <- tracks[tracks$speechiness == min(tracks$speechiness), ]
+
 # ACOUSTICNESS ---------------------------------------------------------------------------------------------
 acoustic <- select(tracks, name, artists, acousticness)
 
 # Acousticness histogram
 acoust_hist <- plot_ly(acoustic, x = ~acousticness) %>% add_histogram(name = "acousticness")
 plotly_build(acoust_hist)
+
+# Max and min
+acoustic_max_track <- tracks[tracks$acoustic == max(tracks$acoustic), ]
+acoustic_min_track <- tracks[tracks$acoustic == min(tracks$acoustic), ]
 
 # INSTRUMENTALNESS — NEED TO WORK ON THIS ------------------------------------------------------------------
 instrumental <- select(tracks, name, artists, instrumentalness)
@@ -109,12 +133,22 @@ instrumentalness_pie <- plot_ly(instrumentalness_count, labels = ~instrumentalne
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 plotly_build(instrumentalness_pie)
 
+# Max and min
+# instrumental_max_track <- tracks[tracks$instrumental == max(tracks$instrumental), 2]
+# instrumental_max_artist <- tracks[tracks$instrumental == max(tracks$instrumental), 3]
+# instrumental_min_track <- tracks[tracks$instrumental == min(tracks$instrumental), 2]
+# instrumental_min_artist <- tracks[tracks$instrumental == min(tracks$instrumental), 3]
+
 # LIVENESS -------------------------------------------------------------------------------------------------
 liveness <- select(tracks, name, artists, liveness)
 
 # Liveness histogram
 liveness_hist <- plot_ly(liveness, x = ~liveness) %>% add_histogram(name = "liveness")
 plotly_build(liveness_hist)
+
+# Max and min
+liveness_max_track <- tracks[tracks$liveness == max(tracks$liveness), ]
+liveness_min_track <- tracks[tracks$liveness == min(tracks$liveness), ]
 
 # VALENCE --------------------------------------------------------------------------------------------------
 valence <- select(tracks, name, artists, valence)
@@ -123,12 +157,20 @@ valence <- select(tracks, name, artists, valence)
 valence_hist <- plot_ly(valence, x = ~valence) %>% add_histogram(name = "valence")
 plotly_build(valence_hist)
 
+# Max and min
+valence_max_track <- tracks[tracks$valence == max(tracks$valence), ]
+valence_min_track <- tracks[tracks$valence == min(tracks$valence), ]
+
 # TEMPO ----------------------------------------------------------------------------------------------------
 tempo <- select(tracks, name, artists, tempo)
 
 # Tempo histogram
 tempo_hist <- plot_ly(tempo, x = ~tempo) %>% add_histogram(name = "tempo")
 plotly_build(tempo_hist)
+
+# Max and min
+tempo_max_track <- tracks[tracks$tempo == max(tracks$tempo), ]
+tempo_min_track <- tracks[tracks$tempo == min(tracks$tempo), ]
 
 #DURATION --------------------------------------------------------------------------------------------------
 # Tracks by ascending duration
@@ -177,6 +219,10 @@ plotly_build(duration_hist)
 # CHANGE TIME IN MS TO HUMAN TIME (minutes and seconds)
 track_time <- tracks %>% select(name, duration_ms) %>% 
                     mutate(duration = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
+
+# Max and min
+duration_max_track <- tracks[tracks$duration_ms == max(tracks$duration_ms), ]
+duration_min_track <- tracks[tracks$duration_ms == min(tracks$duration_ms), ]
 
 # TIME SIGNATURE  ------------------------------------------------------------------------------------------
 time <- count(tracks, time_signature)

@@ -16,26 +16,30 @@ library(plotly)
 ```
 
 # Spotify's Top 100 Tracks of 2017
-##### An in-depth look at what we streamed the most
+### An in-depth look at what we streamed the most
 
-For this project, I'm exploring the data from Spotify's top streamed tracks of 2017. [This Kaggle dataset](https://www.kaggle.com/nadintamer/top-tracks-of-2017/data) includes Spotify's track metadata as well as 13 different track metrics for a total of 16 data points per track: track id, track name, track artist, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration (ms), and time signature. Spotify provides a brief interpretation of these descriptors on its [developer API endpoint reference](https://developer.spotify.com/web-api/get-audio-features/).
+***
+
+### Summary 
+
+This project explores the data from Spotify's top streamed tracks of 2017. [This Kaggle dataset](https://www.kaggle.com/nadintamer/top-tracks-of-2017/data) includes Spotify's track metadata as well as 13 different track metrics for a total of 16 data points per track: track id, track name, track artist, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration (ms), and time signature. Spotify provides a brief interpretation of these descriptors on its [developer API endpoint reference](https://developer.spotify.com/web-api/get-audio-features/).
 
 ```{r data, include = FALSE}
 # Read in Spotify Top Songs 2017 csv
 tracks <- read.csv("data/toptracks2017.csv", stringsAsFactors = FALSE)
 ```
 
-```{r artists, include = FALSE}
-# ARTISTS
-artists <- tracks %>% select(name, artists)
+***
 
+### Artists
+
+```{r artists, include = FALSE}
 # Tracks per artist
-artist_popularity <- artists %>% select(artists) %>% count(artists) %>% arrange(-n)
+artist_popularity <- tracks %>% select(artists) %>% count(artists) %>% arrange(-n)
 top_artists <- artist_popularity %>% filter(n > 1)
 ```
 
-### Artists
-The top 100 tracks may be 100 individual songs, but there were `r nrow(topArtists)` artists with more than one track on the list. Topping the list with `r topArtists[1,2]` tracks each were `r topArtists[1,1]` and `r topArtists[2,1]`. 
+The top 100 tracks may be 100 individual songs, but there were only `r nrow(artist_popularity)` unique artists total, with `r nrow(top_artists)` artists having more than one track on the list. Topping the list with `r top_artists[1,2]` tracks each were **`r top_artists[1,1]`** and **`r top_artists[2,1]`**.
 
 ```{r artist table, echo = FALSE}
 # Top artists table
@@ -43,3 +47,117 @@ artist_col <- c("Artist Name","Number of Tracks")
 kable(top_artists, row.names = NA, col.names = artist_col, caption = "Artists With More Than One Track")
 ```
 
+***
+
+### Dancebility
+
+```{r danceability, include = FALSE}
+# Danceability histogram
+dance_hist <- plot_ly(tracks, x = ~danceability) %>% add_histogram(name = "danceability")
+
+# Max and min
+danceability_max_track <- tracks[tracks$danceability == max(tracks$danceability), 2]
+danceability_max_artist <- tracks[tracks$danceability == max(tracks$danceability), 3]
+danceability_min_track <- tracks[tracks$danceability == min(tracks$danceability), ]
+```
+
+> *Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.*
+
+2017's most danceable songs were"`r danceability_max_track[1]`" by `r danceability_max_artist[1]` and "`r danceability_max_track[2]`" by `r danceability_max_artist[2]`, both with a danceability rating of **`r max(tracks$danceability)`**. People obviously still listened to less danceable songs, and 2017's least danceable song was "`r danceability_min_track$name`" by `r danceability_min_track$artists` with a danceability rating of **`r min(tracks$danceability)`**. As seen in the distribution and perhaps unsurprisingly, most of the tracks have a fairly high danceability rating. It seems like people like songs that they can dance to! That being said, almost a quarter of the top 100 streamed songs have a danceability rating around 7.
+
+##### Histogram
+```{r danceability histogram, echo = FALSE}
+plotly_build(dance_hist)
+```
+
+***
+
+### Energy
+
+```{r energy, include = FALSE}
+# Energy histogram
+energy_hist <- plot_ly(tracks, x = ~energy) %>% add_histogram(name = "energy")
+
+# Max and min
+energy_max_track <- tracks[tracks$energy == max(tracks$energy), ]
+energy_min_track <- tracks[tracks$energy == min(tracks$energy), ]
+```
+
+> *Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.*
+
+The things that make a song energetic share an apparent description with house music. 2017's most energetic song was "`r energy_max_track$name`" by `r energy_max_track$artists` with an energy rating of **`r max(tracks$energy)`**, and 2017's least energetic song was "`r energy_min_track$name`" by `r energy_min_track$artists` with an energy rating of **`r min(tracks$energy)`**. The histogram shows two distinct groupings, both relatively quite high in energy.
+
+##### Histogram
+```{r energy histogram, echo = FALSE}
+plotly_build(energy_hist)
+```
+
+***
+
+### Key
+
+```{r key, include = FALSE}
+key_names <- c("C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B")
+key_count <- tracks %>% count(key)
+key_count$key <- key_names
+
+# Key bar chart
+key_chart <- plot_ly(key_count, x = ~key, y = ~n, type = "bar")
+most_common_key <- key_count[key_count$n == max(key_count$n), 1]
+```
+
+Spotify also provides information about what key the song is in. When we look at the top streamed songs of 2017, we can see easily that the most popular key was `r most_common_key`, but not by much.
+
+##### Bar Chart
+```{r key bar chart, echo = FALSE}
+plotly_build(key_chart)
+```
+
+***
+
+### Loudness
+
+```{r loudness, include = FALSE}
+# Loudness histogram
+loud_hist <- plot_ly(tracks, x = ~loudness) %>% add_histogram(name = "loudness")
+
+# Max and min
+loudness_max_track <- tracks[tracks$loudness == max(tracks$loudness), ]
+loudness_min_track <- tracks[tracks$loudness == min(tracks$loudness), ]
+```
+
+> *The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typical range between -60 and 0 db.*
+
+There has been a war on music loudness for some time now. According to the [Wikipedia article](https://en.wikipedia.org/wiki/Loudness_war), "The loudness war (or loudness race) refers to the trend of increasing audio levels in recorded music which many critics believe reduces sound quality and listener enjoyment." 2017's loudest song was "`r loudness_max_track$name`" by `r loudness_max_track$artists` with an loudness rating of **`r max(tracks$loudness)`**, and 2017's quiestest song was "`r loudness_min_track$name`" by `r loudness_min_track$artists` with an energy rating of **`r min(tracks$loudness)`**. Spotify cites that the values are typically between -60 and 0, and since the quietest top streamed track was `r min(tracks$loudness)`, and as shown below, most are in the -6 to -4 range, it would suggest that loud songs are popular.
+
+##### Histogram
+```{r loudness histogram, echo = FALSE}
+plotly_build(loud_hist)
+```
+
+***
+
+### Mode
+
+```{r mode, include = FALSE}
+mode_count <- tracks %>% count(mode)
+total_major <- mode_count[mode_count$mode == 1, 2]
+total_minor <- mode_count[mode_count$mode == 0, 2]
+mode_names <- c("minor", "major")
+mode_count <- mode_count %>% mutate(name = mode_names)
+
+# Mode pie chart
+mode_pie <- plot_ly(mode_count, labels = ~name, values = ~n, type = "pie",
+                    textposition = "inside",
+                    textinfo = "label",
+                    insidetextfont = list(color = '#FFFFFF')) %>%
+            layout(title = "Modes of the Top Tracks",
+                   xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                   yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+```
+
+Spotify also provides information about whether the song is major or minor. Our most streamed songs were slightly more major, with `r total_major` major songs and `r total_minor` minor songs.
+
+```{r mode pie chart, echo = FALSE}
+plotly_build(mode_pie)
+```
