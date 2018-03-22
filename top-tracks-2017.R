@@ -31,7 +31,8 @@ kable(top_artists, row.names = NA, col.names = artist_col, caption = "Artists Wi
 dance <- select(tracks, name, artists, danceability)
 
 # Danceability histogram
-dance_hist <- plot_ly(dance, x = ~danceability) %>% add_histogram(name = "danceability")
+dance_hist <- plot_ly(tracks, x = ~danceability) %>% 
+                      add_histogram(name = "danceability")
 plotly_build(dance_hist)
 
 # Max and min
@@ -153,7 +154,7 @@ liveness_min_track <- tracks[tracks$liveness == min(tracks$liveness), ]
 # VALENCE --------------------------------------------------------------------------------------------------
 valence <- select(tracks, name, artists, valence)
 
-# Liveness histogram
+# Valence histogram
 valence_hist <- plot_ly(valence, x = ~valence) %>% add_histogram(name = "valence")
 plotly_build(valence_hist)
 
@@ -209,7 +210,7 @@ duration2 <- plot_ly(duration_avg, type="bar",
               orientation="h",
               x = ~duration_ms,
               y = ~y,
-              marker = (list(color = c)))
+              marker = list(color = c))
 plotly_build(duration2)
 
 # Histogram perhaps
@@ -217,12 +218,13 @@ duration_hist <- plot_ly(tracks, x = ~duration_ms) %>% add_histogram(name = "dur
 plotly_build(duration_hist)
 
 # CHANGE TIME IN MS TO HUMAN TIME (minutes and seconds)
-track_time <- tracks %>% select(name, duration_ms) %>% 
-                    mutate(duration = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
+track_time <- tracks %>% mutate(duration_minutes = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
 
 # Max and min
-duration_max_track <- tracks[tracks$duration_ms == max(tracks$duration_ms), ]
-duration_min_track <- tracks[tracks$duration_ms == min(tracks$duration_ms), ]
+# duration_max_track <- tracks[tracks$duration_ms == max(tracks$duration_ms), ]
+# duration_min_track <- tracks[tracks$duration_ms == min(tracks$duration_ms), ]
+duration_max_track <- track_time[tracks$duration_ms == max(tracks$duration_ms), ]
+duration_min_track <- track_time[tracks$duration_ms == min(tracks$duration_ms), ]
 
 # TIME SIGNATURE  ------------------------------------------------------------------------------------------
 time <- count(tracks, time_signature)
@@ -266,7 +268,7 @@ plotly_build(p1)
 
 # CORRELATION HEAT MAP -------------------------------------------------------------------------------------
 track_num <- select(tracks, -id, -name, -artists)
-qplot(x=Var1, y=Var2, data=melt(cor(track_num)), fill=value, geom="tile")
+qplot(x = Var1, y = Var2, data = melt(cor(track_num)), fill = value, geom = "tile")
 
 # ED SHEERAN -----------------------------------------------------------------------------------------------
 ed <- filter(tracks, grepl("Ed Sheeran", artists))

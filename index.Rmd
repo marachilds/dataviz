@@ -10,9 +10,13 @@ output:
 <!-- Using "include = FALSE" to hide code work -->
 ```{r libraries, include = FALSE}
 library(httr)
-library(dplyr)
-library(knitr)
 library(plotly)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(ggplot2)
+library(reshape2)
+library(knitr)
 ```
 
 # Spotify's Top 100 Tracks of 2017
@@ -53,7 +57,8 @@ kable(top_artists, row.names = NA, col.names = artist_col, caption = "Artists Wi
 
 ```{r danceability, include = FALSE}
 # Danceability histogram
-dance_hist <- plot_ly(tracks, x = ~danceability) %>% add_histogram(name = "danceability")
+dance_hist <- plot_ly(tracks, x = ~danceability) %>% 
+                      add_histogram(name = "danceability")
 
 # Max and min
 danceability_max_track <- tracks[tracks$danceability == max(tracks$danceability), 2]
@@ -160,4 +165,75 @@ Spotify also provides information about whether the song is major or minor. Our 
 
 ```{r mode pie chart, echo = FALSE}
 plotly_build(mode_pie)
+```
+
+***
+
+### Valence
+
+```{r valence, include = FALSE}
+# Valence histogram
+valence_hist <- plot_ly(tracks, x = ~valence) %>% add_histogram(name = "valence")
+
+# Max and min
+valence_max_track <- tracks[tracks$valence == max(tracks$valence), ]
+valence_min_track <- tracks[tracks$valence == min(tracks$valence), ]
+```
+
+> *A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).*
+
+Valence is an interesting metric because it can sometimes reflect the turmoil of the times. 2017's most positive song was "`r valence_max_track$name`" by `r valence_max_track$artists` with a valence rating of **`r max(tracks$valence)`**, and 2017's most negative song was "`r valence_min_track$name`" by `r valence_min_track$artists` with a valence rating of **`r min(tracks$valence)`**.
+
+##### Histogram
+```{r valence histogram, echo = FALSE}
+plotly_build(valence_hist)
+```
+
+***
+
+### Tempo
+
+```{r tempo, include = FALSE}
+# Tempo histogram
+tempo_hist <- plot_ly(tracks, x = ~tempo) %>% add_histogram(name = "tempo")
+
+# Max and min
+tempo_max_track <- tracks[tracks$tempo == max(tracks$tempo), ]
+tempo_min_track <- tracks[tracks$tempo == min(tracks$tempo), ]
+```
+
+This [Rolling Stone Article](https://www.rollingstone.com/music/features/producers-songwriters-on-how-pop-songs-got-so-slow-w495464) details an interesting phenomenon of popular music—it's getting slower. Between 2012 and 2017, Yakov Vorobyev found that "the average tempo dropped by 23 bpm (to 90.5 bpm) and the percentage of songs above 120 bpm fell markedly from 56 percent to 12.5 percent." The histogram shows us that 2017 stuck with this trend, as most of the songs fall between 90 to 100 bpm.
+
+##### Histogram
+```{r tempo histogram, echo = FALSE}
+plotly_build(tempo_hist)
+```
+
+***
+
+### Duration
+
+```{r duration, include = FALSE}
+# Change time to minutes and seconds
+track_time <- tracks %>% mutate(duration_minutes = format(as.POSIXct(Sys.Date())+duration_ms/1000, "%M:%S"))
+
+# Max and min
+duration_max_track <- track_time[track_time$duration_ms == max(track_time$duration_ms), ]
+duration_min_track <- track_time[track_time$duration_ms == min(track_time$duration_ms), ]
+```
+
+With just a short note about the length of songs, the longest song was "`r duration_max_track$name`" by `r duration_max_track$artists` at `r duration_max_track$duration_minutes` while the shortest song was "`r duration_min_track$name`" by `r duration_min_track$artists` at `r duration_min_track$duration_minutes`.
+
+***
+
+### Correlations
+
+```{r correlations, include = FALSE}
+track_num <- select(tracks, -id, -name, -artists)
+```
+
+Can we find any correlations between the different metrics? Including ones that weren't discussed above, the heat map allows us to identify the strongest relationships. There's only one relationship that's really strong enough to mention, and that's loudness - energy.
+
+```{r heatmap, echo = FALSE}
+qplot(x = Var1, y = Var2, data = melt(cor(track_num)), fill = value, geom = "tile")
 ```
