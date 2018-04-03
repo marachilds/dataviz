@@ -1,2 +1,2 @@
 # Exploring the Top Tracks of 2017
-This project is an exploration of Spotify's Top Streamed Tracks of 2017 and the Billboard Hot 100 Tracks from 1960-2015. The R Markdown HTML can be found (here)[https://cdn.rawgit.com/marachilds/top-tracks-2017/57b82b56/index.html]. Please see more about this project (here)[http://marachilds.com/hot-100s].
+This project is an exploration of Spotify's Top Streamed Tracks of 2017 and the Billboard Hot 100 Tracks from 1960-2015. The R Markdown HTML can be found [here](https://cdn.rawgit.com/marachilds/top-tracks-2017/57b82b56/index.html). Please see more about this project [here](http://marachilds.com/hot-100s).
