@@ -1,7 +1,7 @@
 ---
 author: "Mara Childs"
 content: "Top Tracks 2017 Analysis"
-date: "3/18/2018"
+date: "3/22/2018"
 output:
   html_document:
     css: style.css
@@ -68,7 +68,7 @@ danceability_min_track <- tracks[tracks$danceability == min(tracks$danceability)
 
 > *Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.*
 
-2017's most danceable songs were"`r danceability_max_track[1]`" by `r danceability_max_artist[1]` and "`r danceability_max_track[2]`" by `r danceability_max_artist[2]`, both with a danceability rating of **`r max(tracks$danceability)`**. People obviously still listened to less danceable songs, and 2017's least danceable song was "`r danceability_min_track$name`" by `r danceability_min_track$artists` with a danceability rating of **`r min(tracks$danceability)`**. As seen in the distribution and perhaps unsurprisingly, most of the tracks have a fairly high danceability rating. It seems like people like songs that they can dance to! That being said, almost a quarter of the top 100 streamed songs have a danceability rating around 7.
+2017's most danceable songs were "`r danceability_max_track[1]`" by `r danceability_max_artist[1]` and "`r danceability_max_track[2]`" by `r danceability_max_artist[2]`, both with a danceability rating of **`r max(tracks$danceability)`**. People obviously still listened to less danceable songs, and 2017's least danceable song was "`r danceability_min_track$name`" by `r danceability_min_track$artists` with a danceability rating of **`r min(tracks$danceability)`**. As seen in the distribution and perhaps unsurprisingly, most of the tracks have a fairly high danceability rating. It seems like people like songs that they can dance to! That being said, almost a quarter of the top 100 streamed songs have a danceability rating around 7.
 
 ##### Histogram
 ```{r danceability histogram, echo = FALSE}
